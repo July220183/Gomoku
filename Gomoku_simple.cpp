@@ -11,6 +11,7 @@
 using namespace std;
 const int SIZE = 15;
 int board[SIZE][SIZE] = { 0 };//本方1，对方-1，空白0
+int searchStartTime;
 // 评估函数所用常数
 const int WIN_SCORE = 1000000;
 const int LIVE4_SCORE = 100000;
@@ -149,6 +150,9 @@ void orderMoves(int board[SIZE][SIZE], vector<pair<int, int>>& moves, int player
 
 // Alpha-Beta 搜索
 int alphaBeta(int board[SIZE][SIZE], int depth, int alpha, int beta, bool isMax, int player, int& bestX, int& bestY) {
+    if ((clock() - searchStartTime) / (double)CLOCKS_PER_SEC > 0.95) {
+        return evaluateBoard(board, player);
+    }
     if (depth == 0) {
         return evaluateBoard(board, player);
     }
@@ -165,7 +169,7 @@ int alphaBeta(int board[SIZE][SIZE], int depth, int alpha, int beta, bool isMax,
             board[x][y] = 0;
             if (eval > maxEval) {
                 maxEval = eval;
-                if (depth == 3) { // 根节点记录最佳走法
+                if (depth == 4) { // 根节点记录最佳走法
                     bestX = x;
                     bestY = y;
                 }
@@ -195,8 +199,9 @@ int alphaBeta(int board[SIZE][SIZE], int depth, int alpha, int beta, bool isMax,
 
 // 获取最佳落子
 pair<int, int> getBestMove(int board[SIZE][SIZE], int player) {
+    searchStartTime = clock();
     int bestX = -1, bestY = -1;
-    alphaBeta(board, 3, INT_MIN, INT_MAX, true, player, bestX, bestY);
+    alphaBeta(board, 4, INT_MIN, INT_MAX, true, player, bestX, bestY);
     if (bestX == -1) {
         // 回退：简单遍历第一个合法空位
         for (int i = 0; i < SIZE; i++)
