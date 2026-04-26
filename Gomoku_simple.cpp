@@ -100,7 +100,7 @@ int evaluatePlayer(int board[SIZE][SIZE], int player) {
 int evaluateBoard(int board[SIZE][SIZE], int myPlayer) {
     int myScore = evaluatePlayer(board, myPlayer);
     int oppScore = evaluatePlayer(board, -myPlayer);
-    return myScore - oppScore * 0.9;
+    return myScore - oppScore * 1.2;
 }
 // 生成所有可能的走法：只考虑已有棋子周围2格内的空位
 vector<pair<int, int>> generateMoves(int board[SIZE][SIZE]) {
